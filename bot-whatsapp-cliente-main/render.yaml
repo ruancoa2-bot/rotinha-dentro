@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: rotinha-dentro
+    runtime: docker
+    branch: main
+    dockerfilePath: ./bot-whatsapp-cliente-main/Dockerfile
+    dockerContext: ./bot-whatsapp-cliente-main
+    # Configuração inicial paga. Confira o custo antes de criar o serviço.
+    plan: 8c-32g
+    autoDeployTrigger: commit
+    healthCheckPath: /api/ping
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATA_DIR
+        value: /data
+      - key: PORT
+        value: "10000"
+      - key: TZ
+        value: America/Sao_Paulo
+      - key: OCR_GLOBAL_CONCURRENCY
+        value: "8"
+      - key: OCR_TURBO_MODE
+        value: "true"
+      - key: OCR_VARIANT_CONCURRENCY
+        value: "4"
+      - key: UV_THREADPOOL_SIZE
+        value: "16"
+      - key: BOT_PERFORMANCE_PROFILE
+        value: high
+      - key: BOT_EAGER_WORKERS
+        value: "true"
+      - key: PANEL_USERS
+        sync: false
+      - key: PANEL_ADMIN_EMAILS
+        sync: false
+      - key: PANEL_SESSION_SECRET
+        generateValue: true
+      - key: KEEP_ALIVE_WHEN_MONITORING
+        value: "false"
+      - key: DAILY_SESSION_RESET_ENABLED
+        value: "false"
+    disk:
+      name: bot-whatsapp-data
+      mountPath: /data
+      sizeGB: 5

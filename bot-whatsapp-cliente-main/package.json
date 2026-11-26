@@ -1,0 +1,88 @@
+{
+  "name": "Bot-whatsapp-ParaPc-rotas",
+  "version": "1.7.0",
+  "description": "Bot de WhatsApp com painel desktop",
+  "main": "dist/desktop/main.js",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "start": "node dist/server.js",
+    "server:dev": "npm run build && node dist/server.js",
+    "desktop:dev": "concurrently -k \"npm:renderer:dev\" \"npm:electron:dev\"",
+    "renderer:dev": "vite --host 127.0.0.1",
+    "electron:dev": "npm run build:main && wait-on http://127.0.0.1:5173 && node scripts/start-electron.cjs",
+    "build": "tsc && vite build",
+    "build:main": "tsc",
+    "typecheck": "tsc --noEmit",
+    "bench:operational": "npm run build:main && node scripts/benchmark-operational.cjs",
+    "test": "npm run build:main && node --test tests/*.test.js",
+    "verify": "npm run build && npm run build:main && node --test tests/*.test.js && npm audit --omit=dev",
+    "desktop:build": "npm run build && electron-builder --win",
+    "desktop:pack": "npm run build && electron-builder --dir",
+    "test:desktop": "npm run build && node scripts/run-desktop-audit.cjs",
+    "test:web-resume": "npm run build && npm run build:main && node scripts/run-desktop-audit.cjs audit-web-resume.cjs",
+    "test:deleted-routes": "npm run build && node scripts/run-desktop-audit.cjs audit-deleted-routes.cjs"
+  },
+  "build": {
+    "appId": "com.botwhatsapp.desktop",
+    "productName": "Bot WhatsApp",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "npmRebuild": false
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1152.0",
+    "@hapi/boom": "^10.0.1",
+    "@whiskeysockets/baileys": "7.0.0-rc13",
+    "better-sqlite3": "^13.0.3",
+    "lucide-react": "^0.468.0",
+    "pino": "^9.0.0",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "sharp": "^0.35.4",
+    "tar-stream": "^3.2.2",
+    "tesseract.js": "^7.0.0",
+    "web-push": "^3.6.7",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/qrcode": "^1.5.6",
+    "@types/qrcode-terminal": "^0.12.2",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "@types/tar-stream": "^3.1.5",
+    "@types/web-push": "^3.6.4",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
+    "electron": "^45.4.1",
+    "electron-builder": "^26.8.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0",
+    "vite": "^6.4.3",
+    "wait-on": "^7.2.0"
+  },
+  "overrides": {
+    "minimatch@^9.0.3": "^11.0.1",
+    "minimatch@^10.2.5": "^11.0.1"
+  }
+}
